@@ -4,6 +4,7 @@ MD.plot_signal(x);
 MD.M(x);
 MD.D(x)
 a=MD.On();
+MD.writeOn(a);
 MD.Mx(2048);
 [c,lags] = MD.corr (x);
 [c1,lags1] = MD.two_corr (x, x1);

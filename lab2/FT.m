@@ -1,17 +1,17 @@
 classdef FT
-     methods (Static)
+    methods (Static)
         function [F, title_FT] = DFT(x,N)
             F = complex(zeros(1,N));
-            title_FT = 'Спектр сигнала (ДПФ)';
+            title_FT = 'АЧХ (ДПФ)';
             for p=0:N-1
                 for k = 0:N-1
                     F(1,p+1) = F(1,p+1) + x(k+1)*(cos(2*pi*p*k/N)-sin(2*pi*p*k/N)*1i);
                 end
             end
         end
-        function [F, title_FT]=FFT_handmade (x,N)
+        function [F, title_FT]=FFT_handmade_without_W (x,N)
             F = complex(zeros(1,N));
-            title_FT= 'Спектр сигнала (БПФ)';
+            title_FT= 'АЧХ (БПФ без W)';
             w=zeros(2,N);
             for i = 0:N-1
                 if i<=N/8
@@ -35,9 +35,39 @@ classdef FT
                 end
             end
         end
+        function [F, title_FT]=FFT_handmade (x,N)
+            F = complex(zeros(1,N));
+            title_FT= 'АЧХ (БПФ)';
+            w=zeros(2,N/4+1);
+            W=zeros(1,N);
+            for i = 0:N/4
+                if i<=N/8
+                    w(1,i+1)=cos(2*pi*i/N);
+                    w(2,i+1)=sin(2*pi*i/N);
+                else
+                    w(1,i+1)=w(2,N/4-i+1);
+                    w(2,i+1)=w(1,N/4-i+1);
+                end
+            end
+            for b= 0:N-1
+                if b <=N/4
+                    W(1,b+1)= w(1,b+1)-w(2,b+1)*1i;
+                elseif b<=N/2
+                    W(1,b+1)=W(1,b-N/4+1)*-1*1i;
+                else
+                    W(1,b+1)=-W(1,b-N/2+1);
+                end
+            end
+            for p=0:N-1
+                for k = 0:N-1
+                    a=mod(p*k,N);
+                    F(1,p+1) = F(1,p+1) + x(k+1)*W(1,a+1);
+                end
+            end
+        end
         function [F, title_FT]=FFT_matlab(x)
             F=fft(x);
-            title_FT = 'Спектр сигнала(БПФ, встроенная функция)';
+            title_FT = 'АЧХ (БПФ, встроенная функция)';
         end
         function [A_lenH, H]=plot_FT (F,title_FT,Fd,N)
             A=abs(F);% Амплитуды преобразования Фурье сигнала
@@ -64,10 +94,17 @@ classdef FT
             figure
             plot(H,A_lenH_FFT-A_lenH_DFT);
             hold on;
-            title('Отклонение ФПФ от ДПФ (обратить внимание на степень отклонения)');
+            title('Отклонение БПФ от ДПФ');
             xlabel('Частота');
             ylabel('Отклонение');
             saveas(gcf,'./res/compare_deltaA_FFT_DFT.jpg');
+        end
+        function compare_time_FFT(y,N)
+            f1=@() FT.FFT_handmade_without_W(y,N);
+            f2=@() FT.FFT_handmade(y,N);
+            t1=MD.time_f(f1,'БПФ без W');
+            t2=MD.time_f(f2,'БПФ');
+            MD.difference_time (t1,t2, 'БПФ без W', 'БПФ');
         end
     end
 end

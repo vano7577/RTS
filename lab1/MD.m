@@ -55,13 +55,13 @@ classdef MD
         function plot_corr (lags, c, title_s)
             figure
             plot(lags,c)
-            title('Нормированная %s функция', title_s)
+            title(sprintf('Нормированная %s функция', title_s))
             xlabel('τ')
             ylabel('Ψ(τ)')
             saveas(gcf, sprintf('./res/norm_%s.jpg',title_s))
         end
         function writeOn (a)
-            writematrix(a,'O.csv');
+            writematrix(a,'./res/O.csv');
         end
         function difference_time (t,t1, title_f, title_f1)
             fprintf('Соотношение времени выполнения %s и %s функций\nt(%s)/t(%s)  = %f\n\n',title_f, title_f1, title_f, title_f1,t/t1);
