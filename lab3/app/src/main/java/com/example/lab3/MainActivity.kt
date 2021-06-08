@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
             val result = lab3_1().gen_alg(number)
             aResult.apply { text= result[0].toString() }
             bResult.apply { text= result[1].toString()}
+            errorMessage.apply {
+                text = "no errors"
+            }
         }
     }
     fun lab2(view: View){
@@ -61,6 +64,9 @@ class MainActivity : AppCompatActivity() {
         }else{
             w1Result.apply { text= result.first.toString() }
             w2Result.apply { text= result.second.toString() }
+            errorMessage.apply {
+                text = "no errors"
+            }
         }
 
     }
@@ -85,6 +91,9 @@ class MainActivity : AppCompatActivity() {
             resultB.apply {text= result[1].toString()}
             resultC.apply {text= result[2].toString()}
             resultD.apply {text= result[3].toString()}
+            errorMessage.apply {
+                text = "no errors"
+            }
         }
     }
 }
