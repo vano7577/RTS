@@ -1,12 +1,14 @@
 package com.example.lab3
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
-import kotlin.math.sqrt
+import android.widget.Toast
+import java.util.Collections.min
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,34 +16,41 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-    fun lab1(view: View){
+    @SuppressLint("SetTextI18n")
+    fun lab1(view: View) {
         val editText = findViewById<EditText>(R.id.EnterNLab31)
         val aResult = findViewById<TextView>(R.id.aResultLab31)
         val bResult = findViewById<TextView>(R.id.bResult)
         val number = editText.text.toString().toInt()
         val errorMessage = findViewById<TextView>(R.id.errorMessage)
+        val time: Int
 
-        var err =""
-        if (number % 2 == 0) {
-            errorMessage.apply {
-                text = "Enter an odd number"
+        when {
+            number % 2 == 0 -> {
+                errorMessage.apply {
+                    text = "Enter an odd number"
+                }
             }
-        }
-        else if  (number <= 0) {
-            errorMessage.apply {
-                text = "Enter a positive number"
+            number <= 0 -> {
+                errorMessage.apply {
+                    text = "Enter a positive number"
+                }
             }
-        }
-        else {
-            val result = lab3_1().gen_alg(number)
-            aResult.apply { text= result[0].toString() }
-            bResult.apply { text= result[1].toString()}
-            errorMessage.apply {
-                text = "no errors"
+            else -> {
+                val time_in = System.currentTimeMillis()
+                val result = lab3_1().gen_alg(number)
+                time = (System.currentTimeMillis() - time_in).toInt()
+                aResult.apply { text= result[0].toString() }
+                bResult.apply { text= result[1].toString()}
+                errorMessage.apply {
+                    text = "no errors"
+                }
+                Toast.makeText(applicationContext , "$time nanosecond", Toast.LENGTH_LONG).show()
             }
         }
     }
-    fun lab2(view: View){
+    @SuppressLint("SetTextI18n")
+    fun lab2(view: View) {
         val spinnerSpeed = findViewById<Spinner>(R.id.speed)
         val spinnerTime = findViewById<Spinner>(R.id.time)
         val spinnerIter = findViewById<Spinner>(R.id.iter)
@@ -70,7 +79,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun lab3(view: View){
+    @SuppressLint("SetTextI18n")
+    fun lab3(view: View) {
         val editX1 = findViewById<EditText>(R.id.editx1).text.toString().toDouble()
         val editX2 = findViewById<EditText>(R.id.editx2).text.toString().toDouble()
         val editX3 = findViewById<EditText>(R.id.editx3).text.toString().toDouble()
@@ -81,12 +91,36 @@ class MainActivity : AppCompatActivity() {
         val resultB =  findViewById<TextView>(R.id.bResultLab33)
         val resultC =  findViewById<TextView>(R.id.cResultLab33)
         val resultD =  findViewById<TextView>(R.id.dResultLab33)
-        val result = lab3_3(editX1,editX2,editX3,editX4,editY).find_answer()
-        if (result.isEmpty()) {
+        val resultChance= findViewById<TextView>(R.id.chanceResultLab33)
+        val result = lab3_3(editX1,editX2,editX3,editX4,editY).find_answer(0.15)
+        val res_chance: MutableList<Double> = mutableListOf()
+        var k =0
+        for (j in 10..100) {
+
+            var resultc = lab3_3(editX1, editX2, editX3, editX4, editY).find_answer(j/100.0)
+            while(resultc.size==1){
+                resultc = lab3_3(editX1, editX2, editX3, editX4, editY).find_answer(j/100.0)
+            }
+            res_chance.add(resultc[4])
+            k++
+        }
+        var min=0
+        var min_res=res_chance[0]
+        for (i in res_chance.indices){
+                if (min_res>res_chance[i])
+                {
+                    min_res=res_chance[i]
+                    min=i
+                }
+            }
+
+        if (result.size==1) {
             errorMessage.apply {
                 text = "No possible answer in range [1;y/2]"
             }
         }else{
+
+            resultChance.apply {  text =(min+10).toString()+'%' }
             resultA.apply {text= result[0].toString()}
             resultB.apply {text= result[1].toString()}
             resultC.apply {text= result[2].toString()}
@@ -97,25 +131,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-fun lab3_1(n : Int = 1) : MutableList<Int> {
-    var n : Int =899
-    if(n % 2 == 0) error("Введите нечётное число")
-    if (n <= 0) error("Введите положительное число")
-    var x : Int = sqrt(n.toDouble()).toInt()+1
-    var k : Int = 0
-    var i : Int =0
-    var y : Int = 0
-    while (k==0){
-        y= Math.pow(((x + i).toDouble()), 2.00).toInt()-n
-        if((sqrt(y.toDouble()))% 1.0 == 0.0){
-            k=i
-            break
-        }else i++
-    }
-    var a : Int =x+k
-    var b : Int = sqrt(y.toDouble()).toInt()
-    println(a)
-    println(b)
-    println((a+b)*(a-b))
-    return mutableListOf(a,b)
-}
+

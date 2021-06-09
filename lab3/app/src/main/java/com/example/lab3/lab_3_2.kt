@@ -38,8 +38,3 @@ constructor(in_speed: Double, in_time: Double, in_iter: Int) {
         return Pair(W1, W2)
     }
 }
-//
-//fun main() {
-//    val example2 = lab_3_2(0.01, 0.5, 100)
-//    println(example2.find_answer())
-//}

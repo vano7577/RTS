@@ -30,7 +30,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/EnterNLab31"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.023"
+        tools:ignore="OnClick,TextViewEdits" />
 
     <EditText
         android:id="@+id/EnterNLab31"
@@ -268,6 +269,30 @@
         app:layout_constraintEnd_toStartOf="@+id/bResultLab33"
         app:layout_constraintTop_toBottomOf="@+id/buttonLab33" />
 
+    <TextView
+        android:id="@+id/chancetitle"
+        android:layout_width="197dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="4dp"
+        android:ems="10"
+
+        android:text="chance of mutation (10-100%): "
+        app:layout_constraintBottom_toTopOf="@+id/errorMessage"
+        app:layout_constraintEnd_toStartOf="@+id/chanceResultLab33"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLab33"
+        app:layout_constraintVertical_bias="0.7" />
+
+    <TextView
+        android:id="@+id/chanceResultLab33"
+        android:layout_width="72dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="72dp"
+        app:layout_constraintBottom_toTopOf="@+id/errorMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLab33"
+        app:layout_constraintVertical_bias="0.0" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -313,6 +338,8 @@
         android:textColor="#F44336"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLab33" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLab33"
+        app:layout_constraintVertical_bias="0.701" />
 </androidx.constraintlayout.widget.ConstraintLayout>

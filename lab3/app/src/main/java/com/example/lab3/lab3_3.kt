@@ -4,18 +4,18 @@ import kotlin.math.absoluteValue
 
 class lab3_3
 constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in_x4: Double = 0.00, in_y: Double = 15.00) {
-    val x1 = in_x1
-    val x2 = in_x2
-    val x3 = in_x3
-    val x4 = in_x4
-    val y = in_y
-    val zero_population: MutableList<MutableList<Double>> = mutableListOf()
-    var population: MutableList<MutableList<Double>> = mutableListOf()
-    val fitness_list: MutableList<Double> = mutableListOf()
-    val child_popul: MutableList<MutableList<Double>> = mutableListOf()
-    var best_popul: MutableList<Double> = mutableListOf()
+    private val x1 = in_x1
+    private val x2 = in_x2
+    private val x3 = in_x3
+    private val x4 = in_x4
+    private val y = in_y
+    private val zero_population: MutableList<MutableList<Double>> = mutableListOf()
+    private var population: MutableList<MutableList<Double>> = mutableListOf()
+    private val fitness_list: MutableList<Double> = mutableListOf()
+    private val child_popul: MutableList<MutableList<Double>> = mutableListOf()
+    private var best_popul: MutableList<Double> = mutableListOf()
 
-    fun find_fitness(popul_row: MutableList<Double>): Double {
+    private fun find_fitness(popul_row: MutableList<Double>): Double {
         val fitness: Double = y -
                 popul_row[0] * x1 -
                 popul_row[1] * x2 -
@@ -24,7 +24,7 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         return fitness.absoluteValue
     }
 
-    fun create_zero_population() {
+    private fun create_zero_population() {
         for (i in 0..3) {
             zero_population.add(mutableListOf())
             for (j in 0..3) {
@@ -33,7 +33,7 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         }
     }
 
-    fun find_fitness_of_popul() {
+    private fun find_fitness_of_popul() {
         fitness_list.clear()
         if (population.isEmpty()) {
             zero_population.mapTo(population) { it }
@@ -43,7 +43,7 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         }
     }
 
-    fun play_rulet() {
+    private fun play_rulet() {
         child_popul.clear()
         var rulet = 0.00
         val procent_rulet: MutableList<Double> = mutableListOf()
@@ -64,7 +64,6 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         child_popul.clear()
         while (i < 4) {
             val piu: Double = (1..100).random().toDouble() / 100
-            var k = 0
             var this_child = 0
             for (k in 0..3) {
                 if (piu >= rulet_circle[k]) {
@@ -76,7 +75,7 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         }
     }
 
-    fun crossing_over() {
+    private fun crossing_over() {
         population.clear()
         for (p in 0..3) {
             val c: MutableList<Double> = mutableListOf()
@@ -95,25 +94,49 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
         }
     }
 
-    fun find_best_fitness(): Boolean {
+    private fun find_best_fitness(): Boolean {
         this.find_fitness_of_popul()
         fitness_list.forEach { if (it == 0.0) return true }
         return false
     }
+    private fun mutation(chance_mutation: Double){
+        for (i in 0..3) {
+            val piu: Double = (1..100).random().toDouble() / 100
+            if (piu<=chance_mutation){
+                val j = (0..1).random()
+                population[i][j]=population[i][j]-1+2*(0..1).random()
+            }
+        }
+    }
 
-    fun life() {
+    private fun life(chance_mutation: Double):Int {
         var q = 0
         while (!find_best_fitness() && q < 10) {
             this.find_fitness_of_popul()
             this.play_rulet()
             this.crossing_over()
+            this.mutation(chance_mutation)
             q++
         }
+        return q
     }
-
-    fun find_answer(): MutableList<Double> {
+/*for pop
+        вероятность мутации хромоомы = рандом//0-1
+       var критерий=шпанс мутации = for global 0,1 до 1
+        если вероятность мутации хромоомы<=шанс мутации
+        (элемсент рандомна изменяеться на рандом(+/-)1)
+        количество изменений поколений записываю в массив for global 0,1 до 1
+        min(массив for global 0,1 до 1) будет ответом
+* pop1[1,2,3,4]
+*pop2 [1,2,3,4]
+* pop3[1,2,3,4]
+* pop4[1,2,3,4]
+*
+* */
+    fun find_answer(chance_mutation: Double): MutableList<Double> {
+    var j=0
         this.create_zero_population()
-        this.life()
+        j+=this.life(chance_mutation)
         while ((!this.fitness_list.contains(0.0)) &&
             population[0] == child_popul[0] &&
             population[1] == child_popul[1] &&
@@ -125,18 +148,15 @@ constructor(in_x1: Double = 1.00, in_x2: Double = 1.00, in_x3: Double = 2.00, in
             fitness_list.clear()
             child_popul.clear()
             this.create_zero_population()
-            this.life()
+            j +=this.life(chance_mutation)
+
         }
         for (i in 0..3) {
             if (fitness_list[i] == 0.0) {
                 best_popul = population[i]
             }
         }
+        best_popul.add(j.toDouble())
         return best_popul
     }
 }
-//
-//fun main() {
-//    val example = lab3_3()
-//    println(example.find_answer())
-//}
