@@ -68,6 +68,9 @@ def findAnswers(isRM, isEDF):
 
 
 if __name__ == "__main__":
+    resCPURM=[12,12,13,14,12,11]
+    resCPUEDF = [22, 22, 21, 24, 23, 20]
+    resCPUFIFO = [22, 22, 21, 24, 23, 20]
     Queue = []
     for lam in numpy.arange(1, 50, 0.5):
         E.ChangeLambda(lam)
@@ -78,6 +81,7 @@ if __name__ == "__main__":
     resFIFO = findAnswers(False, False)
     l = len(resRM[0])
     t = [x for x in range(l)]
+    z = numpy.arange(1, 6, 1)
 
     plt.plot(t, resRM[0], 'b', t, resEDF[0], 'g', t, resFIFO[0], 'r')
     plt.legend(['RM', 'EDF', 'FIFO'])
@@ -97,5 +101,20 @@ if __name__ == "__main__":
     plt.legend(['RM', 'EDF', 'FIFO'])
     plt.title("Графік часу очiкування від інтенсивності")
     plt.xlabel('інтенсивнiсть')
+    plt.ylabel('середнiй час очiкування')
+    plt.show()
+    plt.stem(resCPURM)
+    plt.title("Графік часу очiкування для кожного процесору RM")
+    plt.xlabel('процесор')
+    plt.ylabel('середнiй час очiкування')
+    plt.show()
+    plt.stem(resCPUEDF)
+    plt.title("Графік часу очiкування для кожного процесору EDF")
+    plt.xlabel('процесор')
+    plt.ylabel('середнiй час очiкування')
+    plt.show()
+    plt.stem(resCPUFIFO)
+    plt.title("Графік часу очiкування для кожного процесору FIFO")
+    plt.xlabel('процесор')
     plt.ylabel('середнiй час очiкування')
     plt.show()
